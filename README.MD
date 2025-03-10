@@ -1,11 +1,12 @@
 ## Activité Pratique N°2 - ORM JPA Hibernate Spring Data
+Réalisé par ``Oussama KHOUYA``
 
 L'objectif de cette activité est de permettre au développeur de connecter son application à une base de données. Cela permet de persister les données même après l'arrêt de l'application.
 
 ### Creation Créer un projet Spring Initializer avec les dépendances JPA, H2, Spring Web et Lombock
-![img_1.png](img_1.png)
+![img_1.png](imgs/img_1.png)
 
-![img.png](img.png)
+![img.png](imgs/img.png)
 ### Creation de l'entité JPA Patient ayant les attributs suivantes:
 ```java
 @Entity
@@ -29,9 +30,9 @@ spring.h2.console.enabled=true
 ```
 - Pour accéder à votre base de données H2, entrez http://localhost:8086/h2-console dans votre navigateur, tapez le bon JDBC URL puis Connect
 
-![img_4.png](img_4.png)
+![img_4.png](imgs/img_4.png)
 
-![img_3.png](img_3.png)
+![img_3.png](imgs/img_3.png)
 ### Creation de l'interface JPA Repository basée sur Spring data
 ```java
 public interface PatientRepository extends JpaRepository<Patient, Long> {
@@ -42,7 +43,7 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
 ### Teste de quelques opérations de gestion de patients :
 Pour tester notre code, on utilise CommandLineRunner et @Bean pour executer notre code au debut.
  
-![img_2.png](img_2.png)
+![img_2.png](imgs/img_2.png)
 
 ```java
   @Bean
@@ -109,3 +110,25 @@ Pour tester notre code, on utilise CommandLineRunner et @Bean pour executer notr
     }
 ```
 ---
+### Migration de H2 Database vers MySQL
+- Installer Mysql Server
+- Ajouter mysql dans [pom.xml](pom.xml)
+```xml
+<dependency>
+    <groupId>com.mysql</groupId>
+    <artifactId>mysql-connector-j</artifactId>
+    <scope>runtime</scope>
+</dependency>
+```
+- configurer mysql dans le fichier [application.properties](src/main/resources/application.properties)
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3306/patientdb?createDatabaseIfNotExist=true
+spring.datasource.username=root
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.jpa.database-platform=org.hibernate.dialect.MySQL8Dialect
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+
+```
+- Utiliser un mysql Client (comme HeidiSQL) pour verifier connecter à votre mysql Server 
+![img_5.png](imgs/img_5.png)
