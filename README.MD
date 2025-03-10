@@ -1,26 +1,51 @@
-package khouya.site.tp2;
+## Activité Pratique N°2 - ORM JPA Hibernate Spring Data
 
-import khouya.site.tp2.entities.Patient;
-import khouya.site.tp2.repository.PatientRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
+L'objectif de cette activité est de permettre au développeur de connecter son application à une base de données. Cela permet de persister les données même après l'arrêt de l'application.
 
-import java.util.Date;
+### Creation Créer un projet Spring Initializer avec les dépendances JPA, H2, Spring Web et Lombock
+![img_1.png](img_1.png)
 
-@SpringBootApplication
-public class Tp2Application {
+![img.png](img.png)
+### Creation de l'entité JPA Patient ayant les attributs suivantes:
+```java
+@Entity
+@Data @NoArgsConstructor @AllArgsConstructor @Builder @ToString
+public class Patient {
+@Id
+@GeneratedValue(strategy = GenerationType.IDENTITY)
+private Long id;
 
-    public static void main(String[] args) {
-        SpringApplication.run(Tp2Application.class, args);
-    }
+    private String nom;
+    private Date dateNaissance;
+    private boolean malade;
+    private int score;
+}
+```
+### Configuration de l'unité de persistance dans le ficher application.properties
+```properties
+server.port=8086
+spring.datasource.url=jdbc:h2:mem:patients-db
+spring.h2.console.enabled=true
+```
+- Pour accéder à votre base de données H2, entrez http://localhost:8086/h2-console dans votre navigateur, tapez le bon JDBC URL puis Connect
 
-    @Autowired
-    PatientRepository patientRepository;
+![img_4.png](img_4.png)
 
-    @Bean
+![img_3.png](img_3.png)
+### Creation de l'interface JPA Repository basée sur Spring data
+```java
+public interface PatientRepository extends JpaRepository<Patient, Long> {
+    List<Patient> findByMalade(boolean malade);
+}
+```
+
+### Teste de quelques opérations de gestion de patients :
+Pour tester notre code, on utilise CommandLineRunner et @Bean pour executer notre code au debut.
+ 
+![img_2.png](img_2.png)
+
+```java
+  @Bean
     CommandLineRunner runner() {
 
         return args -> {
@@ -82,4 +107,5 @@ public class Tp2Application {
             patientRepository.findAll().forEach(System.out::println);
         };
     }
-}
+```
+---
